@@ -17,6 +17,7 @@ public class Strategy {
     // вражеские планеты
     private Map<Integer, Planet> enemyPlanets;
 
+    public enum ShipRole { Docker, Rider}
 
     public Strategy(GameMap gameMap) {
         this.gameMap = gameMap;
