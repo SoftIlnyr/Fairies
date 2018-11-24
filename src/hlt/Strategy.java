@@ -1,5 +1,7 @@
 package hlt;
 
+import java.util.Map;
+
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
@@ -23,6 +25,8 @@ public class Strategy {
     //на вход список планет
     //
 
+
+
     /**
      * ближайшая планета для корабля
      * на вход список планет
@@ -33,7 +37,23 @@ public class Strategy {
      * дистанция между объектами
      */
 
-    
+    //Захватчик
+    //Перехватчик - сбивает в полёте
+    //рейдер - захват захваченых планет
+    //
+
+    /**
+     * стратегия для рейдера
+     * поиск ближайших планет
+     */
+    public DockMove shipStrategy(Map<Integer, Planet> planets, Ship ship){
+//       Planet planet =  getNearPlanet(ship,planets);
+       Planet planet =  new Planet();
+       return  new DockMove(ship, planet);
+    }
+
+
+
 
 
 }
