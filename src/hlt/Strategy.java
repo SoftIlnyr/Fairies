@@ -21,13 +21,14 @@ public class Strategy {
 
     public Strategy(GameMap gameMap) {
         this.gameMap = gameMap;
+        initPlanetsMap();
     }
 
     private static double getDistance(Entity e1, Entity e2) {
         return Math.sqrt(Math.pow(e1.getXPos() - e2.getXPos(), 2) + Math.pow(e1.getYPos() - e2.getYPos(), 2));
     }
 
-    public void initPlanetsMap(){
+    private void initPlanetsMap(){
         for (final Planet planet : gameMap.getAllPlanets().values()) {
             if (!planet.isOwned()) {
                 emptyPlanets.add(planet);
