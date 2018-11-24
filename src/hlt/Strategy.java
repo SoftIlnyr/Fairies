@@ -43,7 +43,7 @@ public class Strategy {
             int owner = planet.getOwner();
             if (gameMap.getMyPlayer().getId() != owner) {
                 enemyPlanets.put(planet.getId(), planet);
-                        continue;
+                continue;
             }
             allyPlanets.put(planet.getId(), planet);
         }
@@ -64,22 +64,14 @@ public class Strategy {
     //на вход список планет
     //
     public static Planet getNearPlanet(Map<Integer, Planet> planets, Entity e1) {
-        int planetId = 1000000;
-        double min = 0;
-        //первый?
-        boolean flag = true;
+        int planetId = planets.keySet().iterator().next();
+        double min = e1.getDistanceTo(planets.get(planetId));
 
         for (Integer pId : planets.keySet()) {
-            if (flag) {
-                min = e1.getDistanceTo(planets.get(pId));
+            double distance = e1.getDistanceTo(planets.get(pId));
+            if (distance < min) {
                 planetId = pId;
-                flag = false;
-            } else {
-                double distance = e1.getDistanceTo(planets.get(pId));
-                if (distance < min) {
-                    planetId = pId;
-                    min = distance;
-                }
+                min = distance;
             }
         }
         return planets.get(planetId);

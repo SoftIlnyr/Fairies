@@ -26,7 +26,7 @@ public class MyBot {
             Strategy strategy = new Strategy(gameMap);
             int shipsCount = gameMap.getMyPlayer().getShips().size();
             int permissionToAttackCount = 20;
-            double dockerPercentage = 0.95;
+            double dockerPercentage = 0.6;
             boolean permissionToAttack = false;
             int iterator = 0;
             if (shipsCount > permissionToAttackCount) {
@@ -42,10 +42,15 @@ public class MyBot {
                     role = Strategy.ShipRole.Rider;
                 }
                 Planet planet;
+                Ship enemyShip;
                 if (role == Strategy.ShipRole.Rider) {
                     //атаковать докеров противника
-                    planet = Strategy.getNearPlanet(strategy.getEnemyPlanets(), ship);
-                    Ship enemyShip = gameMap.getAllShips().get(planet.getDockedShips().get(0));
+                    if (strategy.getEnemyPlanets().size() > 0) {
+                        planet = Strategy.getNearPlanet(strategy.getEnemyPlanets(), ship);
+                        enemyShip = gameMap.getAllShips().get(planet.getDockedShips().get(0));
+                    } else {
+                        continue;
+                    }
                     ThrustMove move = Navigation.navigateShipTowardsTarget(gameMap, ship, enemyShip, Constants.MAX_SPEED,
                             true, Constants.MAX_NAVIGATION_CORRECTIONS, Math.PI / 180.0);
                     if (move != null) {
@@ -55,12 +60,12 @@ public class MyBot {
                 }
                 //test
 
-                planet = Strategy.getNearPlanet(strategy.getEmptyPlanets(), ship);
+                planet = Strategy.getNearPlanet(strategy.getDockerPlanets(), ship);
                 if (ship.canDock(planet)) {
                     moveList.add(new DockMove(ship, planet));
                     break;
                 }
-                final ThrustMove newThrustMove = Navigation.navigateShipToDock(gameMap, ship, planet, Constants.MAX_SPEED / 2);
+                final ThrustMove newThrustMove = Navigation.navigateShipToDock(gameMap, ship, planet, Constants.MAX_SPEED);
                 if (newThrustMove != null) {
                     moveList.add(newThrustMove);
                 }
