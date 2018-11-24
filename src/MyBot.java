@@ -38,7 +38,7 @@ public class MyBot {
                     continue;
                 }
 
-                if (permissionToAttack && iterator > dockerPercentage * shipsCount) {
+                if ((permissionToAttack && iterator > dockerPercentage * shipsCount) || strategy.getDockerPlanets().size()==0) {
                     role = Strategy.ShipRole.Rider;
                 }
                 Planet planet;
