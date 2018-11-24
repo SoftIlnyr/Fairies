@@ -53,6 +53,7 @@ public class MyBot {
                     }
                     continue;
                 }
+                //test
 
                 planet = Strategy.getNearPlanet(strategy.getEmptyPlanets(), ship);
                 if (ship.canDock(planet)) {
