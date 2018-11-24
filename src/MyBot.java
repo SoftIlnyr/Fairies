@@ -2,6 +2,7 @@ import hlt.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MyBot {
@@ -62,38 +63,32 @@ public class MyBot {
                 Planet planet = Strategy.getNearPlanet(planetsToAttack, ship);
                 if (planet.getOwner() != gameMap.getMyPlayerId()) {
                     if (planet.getDockedShips().size() > 0 && planet.getDockedShips().size() < 5) {
-                        target = Strategy.getPlanetShip(planet);
+                        role = Strategy.ShipRole.Rider;
                     } else if (strategy.getEmptyPlanets().size() > 0) {
+                        role = Strategy.ShipRole.Docker;
+                    } else {
+                        role = Strategy.ShipRole.Kamikaze;
                     }
                 }
 
-
                 switch (role) {
                     case Rider: {
-                            planet = Strategy.getNearPlanet(strategy.getAllyPlanets(), ship);
-                            try {
-//                                if (planet.getDockedShips().size() > 0 && planet.getDockedShips().size() <= 3) {
-//                                    enemyShip = gameMap.getAllShips().get(planet.getDockedShips().iterator().next());
-//                                    target = enemyShip;
-//                                } else {
-//                                    target = planet;
-//                                }
-//                                if(enemyShip == null){
-                                target = Strategy.getNearShip(gameMap.getAllShips(), planet, gameMap.getMyPlayer());
-//
-                            } catch (Exception e) {
-                                target = Strategy.getNearPlanet(strategy.getEnemyPlanets(), ship);
-                            }
-                            ThrustMove move = Navigation.navigateShipTowardsTarget(gameMap, ship, target, Constants.MAX_SPEED,
-                                    true, Constants.MAX_NAVIGATION_CORRECTIONS, Math.PI / 180.0);
-                            if (move != null) {
-                                moveList.add(move);
-                            }
-                            continue;
+                        try {
+                            List<Ship> enemyShips = gameMap.getAllShips();
+                            enemyShips.removeAll(gameMap.getMyPlayer().getShips().keySet());
+                            target = Strategy.getEnemyShip(enemyShips, ship);
+                        } catch (Exception e) {
+                            target = planet;
+                        }
+                        ThrustMove move = Navigation.navigateShipTowardsTarget(gameMap, ship, target, Constants.MAX_SPEED,
+                                true, Constants.MAX_NAVIGATION_CORRECTIONS, Math.PI / 180.0);
+                        if (move != null) {
+                            moveList.add(move);
+                        }
+                        continue;
                     }
                     case Kamikaze: {
                         if (strategy.getKamikazePlanets().size() > 0) {
-                            planet = Strategy.getNearPlanet(strategy.getEnemyPlanets(), ship);
                             target = planet;
                             ThrustMove move = Navigation.navigateShipTowardsTarget(gameMap, ship, target, Constants.MAX_SPEED,
                                     true, Constants.MAX_NAVIGATION_CORRECTIONS, Math.PI / 180.0);
@@ -103,16 +98,19 @@ public class MyBot {
                         }
                     }
                     case Docker: {
-                        planet = Strategy.getNearPlanet(strategy.getDockerPlanets(), ship);
-                        strategy.getDockerPlanets().remove(planet.getId());
+                        if (strategy.getEmptyPlanets().size() > 0) {
+                            planet = Strategy.getNearPlanet(strategy.getEmptyPlanets(), ship);
+                            strategy.getDockerPlanets().remove(planet.getId());
+                            final ThrustMove newThrustMove = Navigation.navigateShipToDock(gameMap, ship, planet, Constants.MAX_SPEED);
+                            if (newThrustMove != null) {
+                                moveList.add(newThrustMove);
+                            }
+                        }
                         if (ship.canDock(planet)) {
                             moveList.add(new DockMove(ship, planet));
                             break;
                         }
-                        final ThrustMove newThrustMove = Navigation.navigateShipToDock(gameMap, ship, planet, Constants.MAX_SPEED);
-                        if (newThrustMove != null) {
-                            moveList.add(newThrustMove);
-                        }
+
                     }
                 }
             }

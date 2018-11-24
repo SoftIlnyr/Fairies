@@ -117,6 +117,24 @@ public class Strategy {
         return returnShip;
     }
 
+    public static Ship getEnemyShip(List<Ship> ships, Entity e) {
+        Ship returnShip = null;
+        double min = 1000000;
+        for (Ship ship: ships) {
+            if(returnShip == null){
+                returnShip = ship;
+                min = e.getDistanceTo(ship);
+                continue;
+            }
+            double distance = e.getDistanceTo(ship);
+            if (distance < min) {
+                min = distance;
+            }
+
+        }
+        return returnShip;
+    }
+
 
     /**
      * ближайшая планета для корабля
