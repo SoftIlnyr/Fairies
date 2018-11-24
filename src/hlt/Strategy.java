@@ -45,7 +45,9 @@ public class Strategy {
                 enemyPlanets.put(planet.getId(), planet);
                 continue;
             }
-            allyPlanets.put(planet.getId(), planet);
+            if(planet.getDockedShips().size() < planet.getDockingSpots()){
+                allyPlanets.put(planet.getId(), planet);
+            }
         }
         dockerPlanets.putAll(allyPlanets);
         dockerPlanets.putAll(emptyPlanets);
