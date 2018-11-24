@@ -11,55 +11,44 @@ public class MyBot {
         // We now have 1 full minute to analyse the initial map.
         final String initialMapIntelligence =
                 "width: " + gameMap.getWidth() +
-                "; height: " + gameMap.getHeight() +
-                "; players: " + gameMap.getAllPlayers().size() +
-                "; planets: " + gameMap.getAllPlanets().size();
+                        "; height: " + gameMap.getHeight() +
+                        "; players: " + gameMap.getAllPlayers().size() +
+                        "; planets: " + gameMap.getAllPlanets().size();
         Log.log(initialMapIntelligence);
 
         final ArrayList<Move> moveList = new ArrayList<>();
-        for (;;) {
+
+
+        for (; ; ) {
             moveList.clear();
             networking.updateMap(gameMap);
 
             Strategy strategy = new Strategy(gameMap);
 
-            int shipsCount = gameMap.getMyPlayer().getShips().size();
-            int permissionToAttackCount = 15;
-            double dockerPercentage = 0.75;
-            boolean permissionToAttack = false;
-            int iterator = 0;
-            if(shipsCount > permissionToAttackCount){
-                permissionToAttack = true;
-            }
-            Strategy.ShipRole role = Strategy.ShipRole.Docker;
             for (final Ship ship : gameMap.getMyPlayer().getShips().values()) {
-                if (permissionToAttack && iterator > dockerPercentage * shipsCount) {
-                    role = Strategy.ShipRole.Rider;
-                }
-
                 if (ship.getDockingStatus() != Ship.DockingStatus.Undocked) {
-                    continue;// пишем что-то сюда
+                    continue;
                 }
 
-                Move move = null;
-                if (role == Strategy.ShipRole.Docker) {
-                    move = strategy.attackNearPlanet(strategy.getEmptyPlanets(), ship);
-                } else if (role == Strategy.ShipRole.Rider) {
-                    move = strategy.attackNearPlanet(strategy.getEnemyPlanets(), ship);
+                Planet planet = Strategy.getNearPlanet(strategy.getEmptyPlanets(), ship);
+
+                if (planet.isOwned()) {
+                    continue;
                 }
 
-//                    if (strategy.getEmptyPlanets().size() > 0) {
-//                        thrustMove = strategy.attackNearPlanet(strategy.getEmptyPlanets(), ship);
-//                    } else if (strategy.getEnemyPlanets().size() > 0) {
-//                        thrustMove = strategy.attackNearPlanet(strategy.getEnemyPlanets(), ship);
-//                    }
-
-                if (move != null) {
-                    moveList.add(move);
+                if (ship.canDock(planet)) {
+                    moveList.add(new DockMove(ship, planet));
+                    break;
                 }
-                Networking.sendMoves(moveList);
-                iterator++;
+
+                final ThrustMove newThrustMove = Navigation.navigateShipToDock(gameMap, ship, planet, Constants.MAX_SPEED / 2);
+                if (newThrustMove != null) {
+                    moveList.add(newThrustMove);
+                }
+
+                break;
             }
+            Networking.sendMoves(moveList);
         }
     }
 }

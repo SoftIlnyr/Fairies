@@ -24,7 +24,7 @@ public class Strategy {
         initPlanetsMap();
     }
 
-    private static double getDistance(Entity e1, Entity e2) {
+    public static double getDistance(Entity e1, Entity e2) {
         return Math.sqrt(Math.pow(e1.getXPos() - e2.getXPos(), 2) + Math.pow(e1.getYPos() - e2.getYPos(), 2));
     }
 
@@ -61,11 +61,11 @@ public class Strategy {
     //ближайшая планета
     //на вход список планет
     //
-    private static Planet getNearPlanet(Map<Integer, Planet> planets, Entity e1) {
+    public static Planet getNearPlanet(Map<Integer, Planet> planets, Entity e1) {
         Planet result = planets.get(0);
-        double min = Strategy.getDistance(e1, result);
+        double min = e1.getDistanceTo(result);
         for (Integer pId : planets.keySet()) {
-            double distance = Strategy.getDistance(e1, planets.get(pId));
+            double distance = e1.getDistanceTo(planets.get(pId));
             if (distance < min) {
                 result = planets.get(pId);
                 min = distance;
