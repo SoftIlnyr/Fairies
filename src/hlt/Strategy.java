@@ -89,22 +89,18 @@ public class Strategy {
         return planets.get(planetId);
     }
 
-    public static  Ship getNearShip(Map<Integer, Ship> entitys, Entity e1){
-        int entityId = entitys.keySet().iterator().next();
-        double min = e1.getDistanceTo(entitys.get(entityId));
+    public static Ship getNearShip(Map<Integer, Ship> entities, Entity e1){
+        int entityId = entities.keySet().iterator().next();
+        double min = e1.getDistanceTo(entities.get(entityId));
 
-        for (Integer pId : entitys.keySet()) {
-            double distance = e1.getDistanceTo(entitys.get(pId));
+        for (Integer pId : entities.keySet()) {
+            double distance = e1.getDistanceTo(entities.get(pId));
             if (distance < min) {
                 entityId = pId;
                 min = distance;
             }
         }
-        return entitys.get(entityId);
-    }
-
-    public Ship getNearShip() {
-        return null;
+        return entities.get(entityId);
     }
 
 

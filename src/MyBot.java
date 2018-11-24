@@ -57,10 +57,14 @@ public class MyBot {
                     case Rider: {
                         if (strategy.getRiderPlanets().size() > 0) {
                             planet = Strategy.getNearPlanet(strategy.getEnemyPlanets(), ship);
-                            if (planet.getDockedShips().size() > 0 && planet.getDockedShips().size() <= 4) {
-                                enemyShip = gameMap.getAllShips().get(planet.getDockedShips().iterator().next());
-                                target = enemyShip;
-                            } else {
+                            try {
+                                if (planet.getDockedShips().size() > 0 && planet.getDockedShips().size() <= 3) {
+                                    enemyShip = gameMap.getAllShips().get(planet.getDockedShips().iterator().next());
+                                    target = enemyShip;
+                                } else {
+                                    target = planet;
+                                }
+                            } catch (Exception e) {
                                 target = planet;
                             }
                         } else {
@@ -89,6 +93,7 @@ public class MyBot {
                     }
                     case Docker: {
                         planet = Strategy.getNearPlanet(strategy.getDockerPlanets(), ship);
+                        strategy.getDockerPlanets().remove(planet.getId());
                         if (ship.canDock(planet)) {
                             moveList.add(new DockMove(ship, planet));
                             break;
