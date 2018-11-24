@@ -12,6 +12,13 @@ public class Strategy {
      */
     private GameMap gameMap;
 
+    //наши планеты
+    private ArrayList<Planet> allyPlanets = new ArrayList<>();;
+    //свободные планеты
+    private ArrayList<Planet> emptyPlanets = new ArrayList<>();
+    // вражеские планеты
+    private  ArrayList<Planet> enemyPlanets = new ArrayList<>();;
+
     public Strategy(GameMap gameMap) {
         this.gameMap = gameMap;
     }
@@ -19,6 +26,24 @@ public class Strategy {
     private static double getDistance(Entity e1, Entity e2) {
         return Math.sqrt(Math.pow(e1.getXPos() - e2.getXPos(), 2) + Math.pow(e1.getYPos() - e2.getYPos(), 2));
     }
+
+    public void initPlanetsMap(){
+        for (final Planet planet : gameMap.getAllPlanets().values()) {
+            if (!planet.isOwned()) {
+                emptyPlanets.add(planet);
+                continue;
+            }
+            int owner = planet.getOwner();
+            if(gameMap.getMyPlayer().getId() != owner){
+                enemyPlanets.add(planet);
+//                        continue;
+            }
+//                    allyPlanets.add(planet);
+
+        }
+    }
+
+
 
 //    public Map<Planet, Double> sortedPlanets(Entity e, Map<Integer, Planet> planets) {
 //        Map<Planet, Double> result = new TreeMap<>((o1, o2) -> (int) (Strategy.getDistance(e, o1) - Strategy.getDistance(e, o2)));

@@ -26,26 +26,6 @@ public class MyBot {
                     continue;// пишим что-то сюда
                 }
 
-                //наши планеты
-                ArrayList<Planet> allyPlanets = new ArrayList<>();;
-                //свободные планеты
-                ArrayList<Planet> emptyPlanets = new ArrayList<>();
-                // вражеские планеты
-                ArrayList<Planet> enemyPlanets = new ArrayList<>();;
-
-                for (final Planet planet : gameMap.getAllPlanets().values()) {
-                    if (!planet.isOwned()) {
-                        emptyPlanets.add(planet);
-                        continue;
-                    }
-                    int owner = planet.getOwner();
-                    if(gameMap.getMyPlayer().getId() != owner){
-                        enemyPlanets.add(planet);
-//                        continue;
-                    }
-//                    allyPlanets.add(planet);
-
-                }
 
                 for (final Planet planet : gameMap.getAllPlanets().values()) {
                     if (planet.isOwned()) {
