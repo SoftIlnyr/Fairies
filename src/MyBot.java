@@ -39,33 +39,26 @@ public class MyBot {
             }
             Ship enemyShip = null;
             Strategy.ShipRole role = Strategy.ShipRole.Docker;
-            for (final Ship ship : gameMap.getMyPlayer().getShips().values()) {
-                iterator++;
-                if (ship.getDockingStatus() != Ship.DockingStatus.Undocked) {
-                    continue;
-                }
+            try{
+                for (final Ship ship : gameMap.getMyPlayer().getShips().values()) {
+                    iterator++;
+                    if (ship.getDockingStatus() != Ship.DockingStatus.Undocked) {
+                        continue;
+                    }
 
-                if ((permissionToAttack && iterator > dockerPercentage * shipsCount) || strategy.getDockerPlanets().size() == 0) {
-                    role = Strategy.ShipRole.Rider;
-                }
-                if ((permissionToAttack && iterator > riderPercentage * shipsCount)) {
-                    role = Strategy.ShipRole.Kamikaze;
-                }
-                Planet planet;
-                Position target = null;
-                switch (role) {
-                    case Rider: {
+                    if ((permissionToAttack && iterator > dockerPercentage * shipsCount) || strategy.getDockerPlanets().size() == 0) {
+                        role = Strategy.ShipRole.Rider;
+                    }
+                    if ((permissionToAttack && iterator > riderPercentage * shipsCount)) {
+                        role = Strategy.ShipRole.Kamikaze;
+                    }
+                    Planet planet;
+                    Position target = null;
+                    switch (role) {
+                        case Rider: {
                             planet = Strategy.getNearPlanet(strategy.getAllyPlanets(), ship);
                             try {
-//                                if (planet.getDockedShips().size() > 0 && planet.getDockedShips().size() <= 3) {
-//                                    enemyShip = gameMap.getAllShips().get(planet.getDockedShips().iterator().next());
-//                                    target = enemyShip;
-//                                } else {
-//                                    target = planet;
-//                                }
-//                                if(enemyShip == null){
                                 target = Strategy.getNearShip(gameMap.getAllShips(), planet, gameMap.getMyPlayer());
-//
                             } catch (Exception e) {
                                 target = Strategy.getNearPlanet(strategy.getEnemyPlanets(), ship);
                             }
@@ -75,31 +68,36 @@ public class MyBot {
                                 moveList.add(move);
                             }
                             continue;
-                    }
-                    case Kamikaze: {
-                        if (strategy.getKamikazePlanets().size() > 0) {
-                            planet = Strategy.getNearPlanet(strategy.getEnemyPlanets(), ship);
-                            target = planet;
-                            ThrustMove move = Navigation.navigateShipTowardsTarget(gameMap, ship, target, Constants.MAX_SPEED,
-                                    true, Constants.MAX_NAVIGATION_CORRECTIONS, Math.PI / 180.0);
-                            if (move != null) {
-                                moveList.add(move);
+                        }
+                        case Kamikaze: {
+                            if (strategy.getKamikazePlanets().size() > 0) {
+                                planet = Strategy.getNearPlanet(strategy.getEnemyPlanets(), ship);
+                                target = planet;
+                                ThrustMove move = Navigation.navigateShipTowardsTarget(gameMap, ship, target, Constants.MAX_SPEED,
+                                        true, Constants.MAX_NAVIGATION_CORRECTIONS, Math.PI / 180.0);
+                                if (move != null) {
+                                    moveList.add(move);
+                                }
+                            }
+                        }
+                        case Docker: {
+                            planet = Strategy.getNearPlanet(strategy.getDockerPlanets(), ship);
+                            strategy.getDockerPlanets().remove(planet.getId());
+                            if (ship.canDock(planet)) {
+                                moveList.add(new DockMove(ship, planet));
+                                break;
+                            }
+                            final ThrustMove newThrustMove = Navigation.navigateShipToDock(gameMap, ship, planet, Constants.MAX_SPEED);
+                            if (newThrustMove != null) {
+                                moveList.add(newThrustMove);
                             }
                         }
                     }
-                    case Docker: {
-                        planet = Strategy.getNearPlanet(strategy.getDockerPlanets(), ship);
-                        strategy.getDockerPlanets().remove(planet.getId());
-                        if (ship.canDock(planet)) {
-                            moveList.add(new DockMove(ship, planet));
-                            break;
-                        }
-                        final ThrustMove newThrustMove = Navigation.navigateShipToDock(gameMap, ship, planet, Constants.MAX_SPEED);
-                        if (newThrustMove != null) {
-                            moveList.add(newThrustMove);
-                        }
-                    }
+
                 }
+                }
+            catch(Exception e){
+                
             }
             Networking.sendMoves(moveList);
 
