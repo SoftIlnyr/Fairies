@@ -13,11 +13,12 @@ public class Strategy {
     private GameMap gameMap;
 
     //наши планеты
-    private ArrayList<Planet> allyPlanets = new ArrayList<>();;
+    private Map<Integer, Planet> allyPlanets;
     //свободные планеты
-    private ArrayList<Planet> emptyPlanets = new ArrayList<>();
+    private Map<Integer, Planet> emptyPlanets;
     // вражеские планеты
-    private  ArrayList<Planet> enemyPlanets = new ArrayList<>();;
+    private Map<Integer, Planet> enemyPlanets;
+
 
     public Strategy(GameMap gameMap) {
         this.gameMap = gameMap;
@@ -31,12 +32,12 @@ public class Strategy {
     private void initPlanetsMap(){
         for (final Planet planet : gameMap.getAllPlanets().values()) {
             if (!planet.isOwned()) {
-                emptyPlanets.add(planet);
+                emptyPlanets.put(planet.getId(), planet);
                 continue;
             }
             int owner = planet.getOwner();
-            if(gameMap.getMyPlayer().getId() != owner){
-                enemyPlanets.add(planet);
+            if (gameMap.getMyPlayer().getId() != owner) {
+                enemyPlanets.put(planet.getId(), planet);
 //                        continue;
             }
 //                    allyPlanets.add(planet);
@@ -91,13 +92,13 @@ public class Strategy {
      * стратегия для рейдера
      * поиск ближайших планет
      */
-    public DockMove shipStrategy(Map<Integer, Planet> planets, Ship ship){
-       Planet planet =  getNearPlanet(planets, ship);
-       return new DockMove(ship, planet);
+    public DockMove shipStrategy(Map<Integer, Planet> planets, Ship ship) {
+        Planet planet = getNearPlanet(planets, ship);
+        return new DockMove(ship, planet);
     }
 
     public ThrustMove attackNearPlanet(Ship ship) {
-        Planet planet = getNearPlanet(gameMap.getAllPlanets(), ship);
+        Planet planet = getNearPlanet(enemyPlanets, ship);
         return Navigation.navigateShipToDock(gameMap, ship, planet, Constants.MAX_SPEED);
     }
 }

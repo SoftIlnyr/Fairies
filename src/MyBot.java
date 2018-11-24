@@ -21,11 +21,13 @@ public class MyBot {
             moveList.clear();
             networking.updateMap(gameMap);
 
+            Strategy strategy = new Strategy(gameMap);
+
+
             for (final Ship ship : gameMap.getMyPlayer().getShips().values()) {
                 if (ship.getDockingStatus() != Ship.DockingStatus.Undocked) {
-                    continue;// пишим что-то сюда
+                    continue;// пишем что-то сюда
                 }
-
 
                 for (final Planet planet : gameMap.getAllPlanets().values()) {
                     if (planet.isOwned()) {
@@ -37,15 +39,15 @@ public class MyBot {
                         break;
                     }
 
-                    final ThrustMove newThrustMove = Navigation.navigateShipToDock(gameMap, ship, planet, Constants.MAX_SPEED);
-                    if (newThrustMove != null) {
-                        moveList.add(newThrustMove);
+                    ThrustMove thrustMove = strategy.attackNearPlanet(ship);
+                    if (thrustMove != null) {
+                        moveList.add(thrustMove);
                     }
 
                     break;
                 }
+                Networking.sendMoves(moveList);
             }
-            Networking.sendMoves(moveList);
         }
     }
 }
