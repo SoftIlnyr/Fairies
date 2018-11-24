@@ -28,7 +28,7 @@ public class Strategy {
         return Math.sqrt(Math.pow(e1.getXPos() - e2.getXPos(), 2) + Math.pow(e1.getYPos() - e2.getYPos(), 2));
     }
 
-    public void initPlanetsMap(){
+    private void initPlanetsMap(){
         for (final Planet planet : gameMap.getAllPlanets().values()) {
             if (!planet.isOwned()) {
                 emptyPlanets.add(planet);
