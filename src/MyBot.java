@@ -41,22 +41,13 @@ public class MyBot {
                     continue;// пишем что-то сюда
                 }
 
-                for (final Planet planet : gameMap.getAllPlanets().values()) {
-                    if (planet.isOwned()) {
-                        continue;
-                    }
 
-                    if (ship.canDock(planet)) {
-                        moveList.add(new DockMove(ship, planet));
-                        break;
-                    }
-
-                    ThrustMove thrustMove = null;
-                    if (role == Strategy.ShipRole.Docker) {
-                        thrustMove = strategy.attackNearPlanet(strategy.getEmptyPlanets(), ship);
-                    } else if (role == Strategy.ShipRole.Rider) {
-                        thrustMove = strategy.attackNearPlanet(strategy.getEnemyPlanets(), ship);
-                    }
+                ThrustMove thrustMove = null;
+                if (role == Strategy.ShipRole.Docker) {
+                    thrustMove = strategy.attackNearPlanet(strategy.getEmptyPlanets(), ship);
+                } else if (role == Strategy.ShipRole.Rider) {
+                    thrustMove = strategy.attackNearPlanet(strategy.getEnemyPlanets(), ship);
+                }
 
 //                    if (strategy.getEmptyPlanets().size() > 0) {
 //                        thrustMove = strategy.attackNearPlanet(strategy.getEmptyPlanets(), ship);
@@ -64,11 +55,8 @@ public class MyBot {
 //                        thrustMove = strategy.attackNearPlanet(strategy.getEnemyPlanets(), ship);
 //                    }
 
-                    if (thrustMove != null) {
-                        moveList.add(thrustMove);
-                    }
-
-                    break;
+                if (thrustMove != null) {
+                    moveList.add(thrustMove);
                 }
                 Networking.sendMoves(moveList);
                 iterator++;
