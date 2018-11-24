@@ -19,22 +19,45 @@ public class MyBot {
         final ArrayList<Move> moveList = new ArrayList<>();
 
 
+
         for (; ; ) {
             moveList.clear();
             networking.updateMap(gameMap);
 
             Strategy strategy = new Strategy(gameMap);
-
+            int shipsCount = gameMap.getMyPlayer().getShips().size();
+            int permissionToAttackCount = 20;
+            double dockerPercentage = 0.95;
+            boolean permissionToAttack = false;
+            int iterator = 0;
+            if(shipsCount > permissionToAttackCount){
+                permissionToAttack = true;
+            }
+            Strategy.ShipRole role = Strategy.ShipRole.Docker;
             for (final Ship ship : gameMap.getMyPlayer().getShips().values()) {
                 if (ship.getDockingStatus() != Ship.DockingStatus.Undocked) {
                     continue;
                 }
 
-                Planet planet = Strategy.getNearPlanet(strategy.getEmptyPlanets(), ship);
-
-                if (planet.isOwned()) {
-                    continue;
+                if (permissionToAttack && iterator > dockerPercentage * shipsCount) {
+                    role = Strategy.ShipRole.Rider;
                 }
+
+                if (role == Strategy.ShipRole.Rider) {
+                    //атаковать докеров противника
+                    Planet planet = Strategy.getNearPlanet(strategy.getEnemyPlanets(), ship);
+
+                }
+//                if (role == Strategy.ShipRole.Docker) {
+                    Planet planet = Strategy.getNearPlanet(strategy.getEmptyPlanets(), ship);
+
+//                }
+
+
+
+//                if (planet.isOwned()) {
+//                    continue;
+//                }
 
                 if (ship.canDock(planet)) {
                     moveList.add(new DockMove(ship, planet));
@@ -45,8 +68,6 @@ public class MyBot {
                 if (newThrustMove != null) {
                     moveList.add(newThrustMove);
                 }
-
-                break;
             }
             Networking.sendMoves(moveList);
         }
