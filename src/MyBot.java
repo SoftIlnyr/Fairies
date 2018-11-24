@@ -56,7 +56,7 @@ public class MyBot {
                 switch (role) {
                     case Rider: {
                         if (strategy.getRiderPlanets().size() > 0) {
-                            planet = Strategy.getNearPlanet(strategy.getEnemyPlanets(), ship);
+                            planet = Strategy.getNearPlanet(strategy.getAllyPlanets(), ship);
                             try {
 //                                if (planet.getDockedShips().size() > 0 && planet.getDockedShips().size() <= 3) {
 //                                    enemyShip = gameMap.getAllShips().get(planet.getDockedShips().iterator().next());
@@ -64,9 +64,9 @@ public class MyBot {
 //                                } else {
 //                                    target = planet;
 //                                }
-                                if(enemyShip == null){
-                                    enemyShip = Strategy.getNearShip(gameMap.getAllShips(),ship, gameMap.getMyPlayer());
-                                }
+//                                if(enemyShip == null){
+                                    enemyShip = Strategy.getNearShip(gameMap.getAllShips(),planet, gameMap.getMyPlayer());
+//                                }
                             } catch (Exception e) {
                                 target = planet;
                             }
