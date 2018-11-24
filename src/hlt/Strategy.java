@@ -43,11 +43,8 @@ public class Strategy {
 //                        continue;
             }
 //                    allyPlanets.add(planet);
-
         }
     }
-
-
 
 //    public Map<Planet, Double> sortedPlanets(Entity e, Map<Integer, Planet> planets) {
 //        Map<Planet, Double> result = new TreeMap<>((o1, o2) -> (int) (Strategy.getDistance(e, o1) - Strategy.getDistance(e, o2)));
