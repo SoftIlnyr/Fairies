@@ -1,6 +1,8 @@
 import hlt.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MyBot {
 
@@ -41,6 +43,9 @@ public class MyBot {
             Strategy.ShipRole role = Strategy.ShipRole.Docker;
             for (final Ship ship : gameMap.getMyPlayer().getShips().values()) {
                 iterator++;
+                Map<Integer, Planet> planetsToAttack = strategy.getEmptyPlanets();
+                planetsToAttack.putAll(strategy.getEnemyPlanets());
+
                 if (ship.getDockingStatus() != Ship.DockingStatus.Undocked) {
                     continue;
                 }
@@ -51,8 +56,18 @@ public class MyBot {
                 if ((permissionToAttack && iterator > riderPercentage * shipsCount)) {
                     role = Strategy.ShipRole.Kamikaze;
                 }
-                Planet planet;
+
                 Position target = null;
+
+                Planet planet = Strategy.getNearPlanet(planetsToAttack, ship);
+                if (planet.getOwner() != gameMap.getMyPlayerId()) {
+                    if (planet.getDockedShips().size() > 0 && planet.getDockedShips().size() < 5) {
+
+                        target = Strategy.getNearShip()
+                    }
+                }
+
+
                 switch (role) {
                     case Rider: {
                             planet = Strategy.getNearPlanet(strategy.getAllyPlanets(), ship);
