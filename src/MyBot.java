@@ -23,7 +23,7 @@ public class MyBot {
 
             for (final Ship ship : gameMap.getMyPlayer().getShips().values()) {
                 if (ship.getDockingStatus() != Ship.DockingStatus.Undocked) {
-                    continue;
+                    continue;// пишим что-то сюда
                 }
 
                 for (final Planet planet : gameMap.getAllPlanets().values()) {
@@ -36,7 +36,7 @@ public class MyBot {
                         break;
                     }
 
-                    final ThrustMove newThrustMove = Navigation.navigateShipToDock(gameMap, ship, planet, Constants.MAX_SPEED/2);
+                    final ThrustMove newThrustMove = Navigation.navigateShipToDock(gameMap, ship, planet, Constants.MAX_SPEED);
                     if (newThrustMove != null) {
                         moveList.add(newThrustMove);
                     }
