@@ -29,7 +29,9 @@ public class MyBot {
             Strategy strategy = new Strategy(gameMap);
             int shipsCount = gameMap.getMyPlayer().getShips().size();
             int permissionToAttackCount = 20;
-            double dockerPercentage = 0.3;
+            double dockerPercentage = 0.6;
+            double riderPercentage = 0.9;
+
             boolean permissionToAttack = false;
             int iterator = 0;
             if (shipsCount > permissionToAttackCount) {
@@ -44,6 +46,9 @@ public class MyBot {
 
                 if ((permissionToAttack && iterator > dockerPercentage * shipsCount) || strategy.getDockerPlanets().size()==0) {
                     role = Strategy.ShipRole.Rider;
+                }
+                if ((permissionToAttack && iterator > riderPercentage * shipsCount)) {
+                    role = Strategy.ShipRole.Kamikaze;
                 }
                 Planet planet;
                 Ship enemyShip;
