@@ -81,6 +81,13 @@ public class MyBot {
                             }
                         }
                         case Docker: {
+                            if(strategy.getDockerPlanets().size() == 0){
+                                if (strategy.getEmptyPlanets().size() > 0) {
+                                    strategy.getDockerPlanets().putAll(strategy.getEmptyPlanets());
+                                } else {
+                                    strategy.getDockerPlanets().putAll(strategy.getAllyPlanets());
+                                }
+                            }
                             planet = Strategy.getNearPlanet(strategy.getDockerPlanets(), ship);
                             strategy.getDockerPlanets().remove(planet.getId());
                             if (ship.canDock(planet)) {

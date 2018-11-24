@@ -62,12 +62,6 @@ public class Strategy {
                 allyPlanets.put(planet.getId(), planet);
             }
         }
-
-        if (emptyPlanets.size() > 0) {
-            dockerPlanets.putAll(emptyPlanets);
-        } else {
-            dockerPlanets.putAll(allyPlanets);
-        }
     }
 
 //    public Map<Planet, Double> sortedPlanets(Entity e, Map<Integer, Planet> planets) {
