@@ -19,7 +19,7 @@ public class Strategy {
     //союзные и пустые
     private Map<Integer, Planet> dockerPlanets;
 
-    public enum ShipRole { Docker, Rider}
+    public enum ShipRole {Docker, Rider}
 
     public Strategy(GameMap gameMap) {
         this.gameMap = gameMap;
@@ -30,7 +30,7 @@ public class Strategy {
         return Math.sqrt(Math.pow(e1.getXPos() - e2.getXPos(), 2) + Math.pow(e1.getYPos() - e2.getYPos(), 2));
     }
 
-    private void initPlanetsMap(){
+    private void initPlanetsMap() {
         emptyPlanets = new HashMap<>();
         allyPlanets = new HashMap<>();
         enemyPlanets = new HashMap<>();
@@ -64,16 +64,29 @@ public class Strategy {
     //на вход список планет
     //
     public static Planet getNearPlanet(Map<Integer, Planet> planets, Entity e1) {
-        Planet result = planets.get(0);
-        double min = e1.getDistanceTo(result);
+        int planetId = 1000000;
+        double min = 0;
+        //первый?
+        boolean flag = true;
+
         for (Integer pId : planets.keySet()) {
-            double distance = e1.getDistanceTo(planets.get(pId));
-            if (distance < min) {
-                result = planets.get(pId);
-                min = distance;
+            if (flag) {
+                min = e1.getDistanceTo(planets.get(pId));
+                planetId = pId;
+                flag = false;
+            } else {
+                double distance = e1.getDistanceTo(planets.get(pId));
+                if (distance < min) {
+                    planetId = pId;
+                    min = distance;
+                }
             }
         }
-        return result;
+        return planets.get(planetId);
+    }
+
+    public Ship getNearShip() {
+        return null;
     }
 
 
@@ -139,5 +152,13 @@ public class Strategy {
 
     public void setEnemyPlanets(Map<Integer, Planet> enemyPlanets) {
         this.enemyPlanets = enemyPlanets;
+    }
+
+    public Map<Integer, Planet> getDockerPlanets() {
+        return dockerPlanets;
+    }
+
+    public void setDockerPlanets(Map<Integer, Planet> dockerPlanets) {
+        this.dockerPlanets = dockerPlanets;
     }
 }
