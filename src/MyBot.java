@@ -29,7 +29,7 @@ public class MyBot {
             Strategy strategy = new Strategy(gameMap);
             int shipsCount = gameMap.getMyPlayer().getShips().size();
             int permissionToAttackCount = 20;
-            double dockerPercentage = 0.6;
+            double dockerPercentage = 0.5;
             double riderPercentage = 0.9;
 
             boolean permissionToAttack = false;
@@ -45,7 +45,7 @@ public class MyBot {
                     continue;
                 }
 
-                if ((permissionToAttack && iterator > dockerPercentage * shipsCount) || strategy.getDockerPlanets().size()==0) {
+                if ((permissionToAttack && iterator > dockerPercentage * shipsCount) || strategy.getDockerPlanets().size() == 0) {
                     role = Strategy.ShipRole.Rider;
                 }
                 if ((permissionToAttack && iterator > riderPercentage * shipsCount)) {
@@ -72,8 +72,13 @@ public class MyBot {
                             }
                         } else {
                             continue;
+                            if (enemyShip == null) {
+                                target = Strategy.getNearShip(gameMap.getAllShips(), ship, gameMap.getMyPlayer());
+                            }
+                        } catch (Exception e) {
+                            target = planet;
                         }
-                        ThrustMove move = Navigation.navigateShipTowardsTarget(gameMap, ship, enemyShip, Constants.MAX_SPEED,
+                        ThrustMove move = Navigation.navigateShipTowardsTarget(gameMap, ship, target, Constants.MAX_SPEED,
                                 true, Constants.MAX_NAVIGATION_CORRECTIONS, Math.PI / 180.0);
                         if (move != null) {
                             moveList.add(move);

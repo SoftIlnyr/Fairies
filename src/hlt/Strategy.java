@@ -40,6 +40,9 @@ public class Strategy {
         allyPlanets = new HashMap<>();
         enemyPlanets = new HashMap<>();
         dockerPlanets = new HashMap<>();
+        kamikazePlanets = new HashMap<>();
+        riderPlanets = new HashMap<>();
+
         for (final Planet planet : gameMap.getAllPlanets().values()) {
             if (!planet.isOwned()) {
                 emptyPlanets.put(planet.getId(), planet);
@@ -48,7 +51,7 @@ public class Strategy {
             int owner = planet.getOwner();
             if (gameMap.getMyPlayer().getId() != owner) {
                 enemyPlanets.put(planet.getId(), planet);
-                if(planet.getDockedShips().size() > 1){
+                if(planet.getDockedShips().size() > 3){
                     kamikazePlanets.put(planet.getId(), planet);
                 } else {
                     riderPlanets.put(planet.getId(), planet);
@@ -59,8 +62,12 @@ public class Strategy {
                 allyPlanets.put(planet.getId(), planet);
             }
         }
-        dockerPlanets.putAll(allyPlanets);
-        dockerPlanets.putAll(emptyPlanets);
+
+        if (emptyPlanets.size() > 0) {
+            dockerPlanets.putAll(emptyPlanets);
+        } else {
+            dockerPlanets.putAll(allyPlanets);
+        }
     }
 
 //    public Map<Planet, Double> sortedPlanets(Entity e, Map<Integer, Planet> planets) {
