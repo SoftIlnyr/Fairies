@@ -46,6 +46,8 @@ public class MyBot {
                 if (role == Strategy.ShipRole.Rider) {
                     //атаковать докеров противника
                     Planet planet = Strategy.getNearPlanet(strategy.getEnemyPlanets(), ship);
+                    Ship enemyShip = gameMap.getAllShips().get(planet.getDockedShips().get(0));
+                    ThrustMove move = Navigation.navigateShipTowardsTarget(gameMap,ship, enemyShip,);
 
                 }
 //                if (role == Strategy.ShipRole.Docker) {
