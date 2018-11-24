@@ -41,12 +41,11 @@ public class MyBot {
                     continue;// пишем что-то сюда
                 }
 
-
-                ThrustMove thrustMove = null;
+                Move move = null;
                 if (role == Strategy.ShipRole.Docker) {
-                    thrustMove = strategy.attackNearPlanet(strategy.getEmptyPlanets(), ship);
+                    move = strategy.attackNearPlanet(strategy.getEmptyPlanets(), ship);
                 } else if (role == Strategy.ShipRole.Rider) {
-                    thrustMove = strategy.attackNearPlanet(strategy.getEnemyPlanets(), ship);
+                    move = strategy.attackNearPlanet(strategy.getEnemyPlanets(), ship);
                 }
 
 //                    if (strategy.getEmptyPlanets().size() > 0) {
@@ -55,8 +54,8 @@ public class MyBot {
 //                        thrustMove = strategy.attackNearPlanet(strategy.getEnemyPlanets(), ship);
 //                    }
 
-                if (thrustMove != null) {
-                    moveList.add(thrustMove);
+                if (move != null) {
+                    moveList.add(move);
                 }
                 Networking.sendMoves(moveList);
                 iterator++;
