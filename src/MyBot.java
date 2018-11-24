@@ -28,7 +28,7 @@ public class MyBot {
 
             Strategy strategy = new Strategy(gameMap);
             int shipsCount = gameMap.getMyPlayer().getShips().size();
-            int permissionToAttackCount = 20;
+            int permissionToAttackCount = 10;
             double dockerPercentage = 0.5;
             double riderPercentage = 0.9;
 
