@@ -62,8 +62,8 @@ public class MyBot {
                 Planet planet = Strategy.getNearPlanet(planetsToAttack, ship);
                 if (planet.getOwner() != gameMap.getMyPlayerId()) {
                     if (planet.getDockedShips().size() > 0 && planet.getDockedShips().size() < 5) {
-
-                        target = Strategy.getNearShip()
+                        target = Strategy.getPlanetShip(planet);
+                    } else if (strategy.getEmptyPlanets().size() > 0) {
                     }
                 }
 
