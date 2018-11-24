@@ -55,7 +55,6 @@ public class MyBot {
                 Position target = null;
                 switch (role) {
                     case Rider: {
-                        if (strategy.getRiderPlanets().size() > 0) {
                             planet = Strategy.getNearPlanet(strategy.getAllyPlanets(), ship);
                             try {
 //                                if (planet.getDockedShips().size() > 0 && planet.getDockedShips().size() <= 3) {
@@ -65,25 +64,17 @@ public class MyBot {
 //                                    target = planet;
 //                                }
 //                                if(enemyShip == null){
-                                    enemyShip = Strategy.getNearShip(gameMap.getAllShips(),planet, gameMap.getMyPlayer());
-//                                }
+                                target = Strategy.getNearShip(gameMap.getAllShips(), planet, gameMap.getMyPlayer());
+//
                             } catch (Exception e) {
-                                target = planet;
+                                target = Strategy.getNearPlanet(strategy.getEnemyPlanets(), ship);
                             }
-                        } else {
+                            ThrustMove move = Navigation.navigateShipTowardsTarget(gameMap, ship, target, Constants.MAX_SPEED,
+                                    true, Constants.MAX_NAVIGATION_CORRECTIONS, Math.PI / 180.0);
+                            if (move != null) {
+                                moveList.add(move);
+                            }
                             continue;
-                            if (enemyShip == null) {
-                                target = Strategy.getNearShip(gameMap.getAllShips(), ship, gameMap.getMyPlayer());
-                            }
-                        } catch (Exception e) {
-                            target = planet;
-                        }
-                        ThrustMove move = Navigation.navigateShipTowardsTarget(gameMap, ship, target, Constants.MAX_SPEED,
-                                true, Constants.MAX_NAVIGATION_CORRECTIONS, Math.PI / 180.0);
-                        if (move != null) {
-                            moveList.add(move);
-                        }
-                        continue;
                     }
                     case Kamikaze: {
                         if (strategy.getKamikazePlanets().size() > 0) {
