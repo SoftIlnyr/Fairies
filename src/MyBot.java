@@ -80,15 +80,12 @@ public class MyBot {
                         if (strategy.getKamikazePlanets().size() > 0) {
                             planet = Strategy.getNearPlanet(strategy.getEnemyPlanets(), ship);
                             target = planet;
-                        } else {
-                            continue;
+                            ThrustMove move = Navigation.navigateShipTowardsTarget(gameMap, ship, target, Constants.MAX_SPEED,
+                                    true, Constants.MAX_NAVIGATION_CORRECTIONS, Math.PI / 180.0);
+                            if (move != null) {
+                                moveList.add(move);
+                            }
                         }
-                        ThrustMove move = Navigation.navigateShipTowardsTarget(gameMap, ship, target, Constants.MAX_SPEED,
-                                true, Constants.MAX_NAVIGATION_CORRECTIONS, Math.PI / 180.0);
-                        if (move != null) {
-                            moveList.add(move);
-                        }
-                        continue;
                     }
                     case Docker: {
                         planet = Strategy.getNearPlanet(strategy.getDockerPlanets(), ship);
