@@ -16,6 +16,8 @@ public class Strategy {
     private Map<Integer, Planet> emptyPlanets;
     // вражеские планеты
     private Map<Integer, Planet> enemyPlanets;
+    //союзные и пустые
+    private Map<Integer, Planet> dockerPlanets;
 
     public enum ShipRole { Docker, Rider}
 
@@ -32,6 +34,7 @@ public class Strategy {
         emptyPlanets = new HashMap<>();
         allyPlanets = new HashMap<>();
         enemyPlanets = new HashMap<>();
+        dockerPlanets = new HashMap<>();
         for (final Planet planet : gameMap.getAllPlanets().values()) {
             if (!planet.isOwned()) {
                 emptyPlanets.put(planet.getId(), planet);
@@ -40,10 +43,12 @@ public class Strategy {
             int owner = planet.getOwner();
             if (gameMap.getMyPlayer().getId() != owner) {
                 enemyPlanets.put(planet.getId(), planet);
-//                        continue;
+                        continue;
             }
-//                    allyPlanets.add(planet);
+            allyPlanets.put(planet.getId(), planet);
         }
+        dockerPlanets.putAll(allyPlanets);
+        dockerPlanets.putAll(emptyPlanets);
     }
 
 //    public Map<Planet, Double> sortedPlanets(Entity e, Map<Integer, Planet> planets) {
