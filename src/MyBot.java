@@ -23,7 +23,6 @@ public class MyBot {
 
             Strategy strategy = new Strategy(gameMap);
 
-
             for (final Ship ship : gameMap.getMyPlayer().getShips().values()) {
                 if (ship.getDockingStatus() != Ship.DockingStatus.Undocked) {
                     continue;// пишем что-то сюда
@@ -39,7 +38,13 @@ public class MyBot {
                         break;
                     }
 
-                    ThrustMove thrustMove = strategy.attackNearPlanet(ship);
+                    ThrustMove thrustMove = null;
+                    if (strategy.getEmptyPlanets().size() > 0) {
+                        thrustMove = strategy.attackNearPlanet(strategy.getEmptyPlanets(), ship);
+                    } else if (strategy.getEnemyPlanets().size() > 0) {
+                        thrustMove = strategy.attackNearPlanet(strategy.getEnemyPlanets(), ship);
+                    }
+
                     if (thrustMove != null) {
                         moveList.add(thrustMove);
                     }

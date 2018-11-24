@@ -1,10 +1,8 @@
 package hlt;
 
-import java.util.Map;
+import java.util.*;
 
-import java.util.ArrayList;
 import java.util.Map;
-import java.util.TreeMap;
 
 public class Strategy {
     /**
@@ -30,6 +28,9 @@ public class Strategy {
     }
 
     private void initPlanetsMap(){
+        emptyPlanets = new HashMap<>();
+        allyPlanets = new HashMap<>();
+        enemyPlanets = new HashMap<>();
         for (final Planet planet : gameMap.getAllPlanets().values()) {
             if (!planet.isOwned()) {
                 emptyPlanets.put(planet.getId(), planet);
@@ -80,9 +81,6 @@ public class Strategy {
      */
 
 
-
-
-
     //Захватчик
     //Перехватчик - сбивает в полёте
     //рейдер - захват захваченых планет
@@ -97,8 +95,41 @@ public class Strategy {
         return new DockMove(ship, planet);
     }
 
-    public ThrustMove attackNearPlanet(Ship ship) {
-        Planet planet = getNearPlanet(enemyPlanets, ship);
+
+    public ThrustMove attackNearPlanet(Map<Integer, Planet> planets, Ship ship) {
+        Planet planet = getNearPlanet(planets, ship);
         return Navigation.navigateShipToDock(gameMap, ship, planet, Constants.MAX_SPEED);
+    }
+
+    public GameMap getGameMap() {
+        return gameMap;
+    }
+
+    public void setGameMap(GameMap gameMap) {
+        this.gameMap = gameMap;
+    }
+
+    public Map<Integer, Planet> getAllyPlanets() {
+        return allyPlanets;
+    }
+
+    public void setAllyPlanets(Map<Integer, Planet> allyPlanets) {
+        this.allyPlanets = allyPlanets;
+    }
+
+    public Map<Integer, Planet> getEmptyPlanets() {
+        return emptyPlanets;
+    }
+
+    public void setEmptyPlanets(Map<Integer, Planet> emptyPlanets) {
+        this.emptyPlanets = emptyPlanets;
+    }
+
+    public Map<Integer, Planet> getEnemyPlanets() {
+        return enemyPlanets;
+    }
+
+    public void setEnemyPlanets(Map<Integer, Planet> enemyPlanets) {
+        this.enemyPlanets = enemyPlanets;
     }
 }
