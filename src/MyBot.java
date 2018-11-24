@@ -48,36 +48,51 @@ public class MyBot {
                 Planet planet;
                 Ship enemyShip;
                 Position target = null;
-                if (role == Strategy.ShipRole.Rider) {
-                    //атаковать докеров противника
-                    if (strategy.getEnemyPlanets().size() > 0) {
-                        planet = Strategy.getNearPlanet(strategy.getEnemyPlanets(), ship);
-                        if (planet.getDockedShips().size() > 0 && planet.getDockedShips().size() <= 4) {
-                            enemyShip = gameMap.getAllShips().get(planet.getDockedShips().iterator().next());
-                            target = enemyShip;
+                switch (role) {
+                    case Rider: {
+                        if (strategy.getRiderPlanets().size() > 0) {
+                            planet = Strategy.getNearPlanet(strategy.getEnemyPlanets(), ship);
+                            if (planet.getDockedShips().size() > 0 && planet.getDockedShips().size() <= 4) {
+                                enemyShip = gameMap.getAllShips().get(planet.getDockedShips().iterator().next());
+                                target = enemyShip;
+                            } else {
+                                target = planet;
+                            }
                         } else {
-                            target = planet;
+                            continue;
                         }
-                    } else {
+                        ThrustMove move = Navigation.navigateShipTowardsTarget(gameMap, ship, target, Constants.MAX_SPEED,
+                                true, Constants.MAX_NAVIGATION_CORRECTIONS, Math.PI / 180.0);
+                        if (move != null) {
+                            moveList.add(move);
+                        }
                         continue;
                     }
-                    ThrustMove move = Navigation.navigateShipTowardsTarget(gameMap, ship, target, Constants.MAX_SPEED,
-                            true, Constants.MAX_NAVIGATION_CORRECTIONS, Math.PI / 180.0);
-                    if (move != null) {
-                        moveList.add(move);
+                    case Kamikaze: {
+                        if (strategy.getKamikazePlanets().size() > 0) {
+                            planet = Strategy.getNearPlanet(strategy.getEnemyPlanets(), ship);
+                            target = planet;
+                        } else {
+                            continue;
+                        }
+                        ThrustMove move = Navigation.navigateShipTowardsTarget(gameMap, ship, target, Constants.MAX_SPEED,
+                                true, Constants.MAX_NAVIGATION_CORRECTIONS, Math.PI / 180.0);
+                        if (move != null) {
+                            moveList.add(move);
+                        }
+                        continue;
                     }
-                    continue;
-                }
-                //test
-
-                planet = Strategy.getNearPlanet(strategy.getDockerPlanets(), ship);
-                if (ship.canDock(planet)) {
-                    moveList.add(new DockMove(ship, planet));
-                    break;
-                }
-                final ThrustMove newThrustMove = Navigation.navigateShipToDock(gameMap, ship, planet, Constants.MAX_SPEED);
-                if (newThrustMove != null) {
-                    moveList.add(newThrustMove);
+                    case Docker: {
+                        planet = Strategy.getNearPlanet(strategy.getDockerPlanets(), ship);
+                        if (ship.canDock(planet)) {
+                            moveList.add(new DockMove(ship, planet));
+                            break;
+                        }
+                        final ThrustMove newThrustMove = Navigation.navigateShipToDock(gameMap, ship, planet, Constants.MAX_SPEED);
+                        if (newThrustMove != null) {
+                            moveList.add(newThrustMove);
+                        }
+                    }
                 }
             }
             Networking.sendMoves(moveList);

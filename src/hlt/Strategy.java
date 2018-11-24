@@ -18,8 +18,13 @@ public class Strategy {
     private Map<Integer, Planet> enemyPlanets;
     //союзные и пустые
     private Map<Integer, Planet> dockerPlanets;
+    //планеты для камикадзе
+    private Map<Integer, Planet> kamikazePlanets;
 
-    public enum ShipRole {Docker, Rider}
+    //планеты для райдера
+    private Map<Integer, Planet> riderPlanets;
+
+    public enum ShipRole {Docker, Rider, Kamikaze}
 
     public Strategy(GameMap gameMap) {
         this.gameMap = gameMap;
@@ -43,6 +48,11 @@ public class Strategy {
             int owner = planet.getOwner();
             if (gameMap.getMyPlayer().getId() != owner) {
                 enemyPlanets.put(planet.getId(), planet);
+                if(planet.getDockedShips().size() > 1){
+                    kamikazePlanets.put(planet.getId(), planet);
+                } else {
+                    riderPlanets.put(planet.getId(), planet);
+                }
                 continue;
             }
             if(planet.getDockedShips().size() < planet.getDockingSpots()){
@@ -169,5 +179,21 @@ public class Strategy {
 
     public void setDockerPlanets(Map<Integer, Planet> dockerPlanets) {
         this.dockerPlanets = dockerPlanets;
+    }
+
+    public Map<Integer, Planet> getKamikazePlanets() {
+        return kamikazePlanets;
+    }
+
+    public void setKamikazePlanets(Map<Integer, Planet> kamikazePlanets) {
+        this.kamikazePlanets = kamikazePlanets;
+    }
+
+    public Map<Integer, Planet> getRiderPlanets() {
+        return riderPlanets;
+    }
+
+    public void setRiderPlanets(Map<Integer, Planet> riderPlanets) {
+        this.riderPlanets = riderPlanets;
     }
 }
