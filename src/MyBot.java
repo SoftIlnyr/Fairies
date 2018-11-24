@@ -6,7 +6,8 @@ public class MyBot {
 
     public static void main(final String[] args) {
         final Networking networking = new Networking();
-        final GameMap gameMap = networking.initialize("Tamagocchi");
+        final GameMap gameMap = networking.initialize("Fairy");
+//        final GameMap gameMap = networking.initialize("Tamagocchi");
 
         // We now have 1 full minute to analyse the initial map.
         final String initialMapIntelligence =
@@ -14,7 +15,9 @@ public class MyBot {
                         "; height: " + gameMap.getHeight() +
                         "; players: " + gameMap.getAllPlayers().size() +
                         "; planets: " + gameMap.getAllPlanets().size();
-        Log.log(initialMapIntelligence);
+//        Log.log(initialMapIntelligence);
+
+        Log.log("+++++++++++++Fairy01++++++++++++++");
 
         final ArrayList<Move> moveList = new ArrayList<>();
 
@@ -26,7 +29,7 @@ public class MyBot {
             Strategy strategy = new Strategy(gameMap);
             int shipsCount = gameMap.getMyPlayer().getShips().size();
             int permissionToAttackCount = 20;
-            double dockerPercentage = 0.6;
+            double dockerPercentage = 0.3;
             boolean permissionToAttack = false;
             int iterator = 0;
             if (shipsCount > permissionToAttackCount) {
@@ -34,6 +37,7 @@ public class MyBot {
             }
             Strategy.ShipRole role = Strategy.ShipRole.Docker;
             for (final Ship ship : gameMap.getMyPlayer().getShips().values()) {
+                iterator++;
                 if (ship.getDockingStatus() != Ship.DockingStatus.Undocked) {
                     continue;
                 }
@@ -47,11 +51,11 @@ public class MyBot {
                     //атаковать докеров противника
                     if (strategy.getEnemyPlanets().size() > 0) {
                         planet = Strategy.getNearPlanet(strategy.getEnemyPlanets(), ship);
-                        enemyShip = gameMap.getAllShips().get(planet.getDockedShips().get(0));
+//                        enemyShip = gameMap.getAllShips().get(planet.getDockedShips().iterator().next());
                     } else {
                         continue;
                     }
-                    ThrustMove move = Navigation.navigateShipTowardsTarget(gameMap, ship, enemyShip, Constants.MAX_SPEED,
+                    ThrustMove move = Navigation.navigateShipTowardsTarget(gameMap, ship, planet, Constants.MAX_SPEED,
                             true, Constants.MAX_NAVIGATION_CORRECTIONS, Math.PI / 180.0);
                     if (move != null) {
                         moveList.add(move);
@@ -71,6 +75,7 @@ public class MyBot {
                 }
             }
             Networking.sendMoves(moveList);
+
         }
     }
 }

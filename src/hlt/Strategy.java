@@ -116,6 +116,7 @@ public class Strategy {
         return Navigation.navigateShipToDock(gameMap, ship, planet, Constants.MAX_SPEED / 2);
     }
 
+
     public GameMap getGameMap() {
         return gameMap;
     }
