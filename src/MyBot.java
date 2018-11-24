@@ -37,6 +37,7 @@ public class MyBot {
             if (shipsCount > permissionToAttackCount) {
                 permissionToAttack = true;
             }
+            Ship enemyShip = null;
             Strategy.ShipRole role = Strategy.ShipRole.Docker;
             for (final Ship ship : gameMap.getMyPlayer().getShips().values()) {
                 iterator++;
@@ -51,18 +52,20 @@ public class MyBot {
                     role = Strategy.ShipRole.Kamikaze;
                 }
                 Planet planet;
-                Ship enemyShip;
                 Position target = null;
                 switch (role) {
                     case Rider: {
                         if (strategy.getRiderPlanets().size() > 0) {
                             planet = Strategy.getNearPlanet(strategy.getEnemyPlanets(), ship);
                             try {
-                                if (planet.getDockedShips().size() > 0 && planet.getDockedShips().size() <= 3) {
-                                    enemyShip = gameMap.getAllShips().get(planet.getDockedShips().iterator().next());
-                                    target = enemyShip;
-                                } else {
-                                    target = planet;
+//                                if (planet.getDockedShips().size() > 0 && planet.getDockedShips().size() <= 3) {
+//                                    enemyShip = gameMap.getAllShips().get(planet.getDockedShips().iterator().next());
+//                                    target = enemyShip;
+//                                } else {
+//                                    target = planet;
+//                                }
+                                if(enemyShip == null){
+                                    enemyShip = Strategy.getNearShip(gameMap.getAllShips(),ship, gameMap.getMyPlayer());
                                 }
                             } catch (Exception e) {
                                 target = planet;
@@ -70,7 +73,7 @@ public class MyBot {
                         } else {
                             continue;
                         }
-                        ThrustMove move = Navigation.navigateShipTowardsTarget(gameMap, ship, target, Constants.MAX_SPEED,
+                        ThrustMove move = Navigation.navigateShipTowardsTarget(gameMap, ship, enemyShip, Constants.MAX_SPEED,
                                 true, Constants.MAX_NAVIGATION_CORRECTIONS, Math.PI / 180.0);
                         if (move != null) {
                             moveList.add(move);
