@@ -97,9 +97,14 @@ public class Strategy {
     }
 
 
-    public ThrustMove attackNearPlanet(Map<Integer, Planet> planets, Ship ship) {
+    public Move attackNearPlanet(Map<Integer, Planet> planets, Ship ship) {
         Planet planet = getNearPlanet(planets, ship);
-        return Navigation.navigateShipToDock(gameMap, ship, planet, Constants.MAX_SPEED);
+        if (ship.canDock(planet)) {
+            return new DockMove(ship, planet);
+        }
+        //контроль скорости
+
+        return Navigation.navigateShipToDock(gameMap, ship, planet, Constants.MAX_SPEED / 2);
     }
 
     public GameMap getGameMap() {
